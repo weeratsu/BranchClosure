@@ -76,11 +76,9 @@
   .btn-primary { background: var(--primary); color: #fff; }
   .btn-ghost { background: var(--surface); border: 1px solid var(--border); color: var(--text-sec); font-weight: 500; }
   .section-label { font-size: 13px; color: var(--text-muted); font-weight: 600; margin: 18px 2px 8px; text-transform: uppercase; letter-spacing: 0.04em; }
-  /* Prominent "choose a branch" callout */
-  .picker-card { background: var(--primary-bg); border: 1.5px solid var(--primary); border-radius: var(--radius);
-    padding: 14px 16px; margin-bottom: 14px; }
-  .picker-card .pc-head { display:flex; align-items:center; gap:8px; font-weight:700; font-size:15px; color: var(--primary-dark); margin-bottom:3px; }
-  .picker-card .pc-sub { font-size: 12.5px; color: var(--text-sec); margin-bottom: 11px; }
+  #pickerSec > summary { color: var(--primary-dark); background: var(--primary-bg); }
+  #pickerSec[open] > summary { border-bottom: 1px solid var(--border-light); }
+  .pc-sub { font-size: 12.5px; color: var(--text-sec); margin: 2px 0 11px; }
   .picker { display: flex; flex-wrap: wrap; gap: 8px; }
   .chip { font-size: 13px; padding: 9px 14px; border-radius: var(--radius-pill); border: 1.5px solid var(--primary);
     background: var(--surface); color: var(--primary-dark); cursor: pointer; font-weight: 600;
@@ -180,11 +178,13 @@
     </div>
   </details>
 
-  <div class="picker-card">
-    <div class="pc-head">👉 เลือกสาขาที่ต้องไป</div>
-    <div class="pc-sub">แตะชื่อสาขาด้านล่างเพื่อเพิ่มเข้าเช็คลิสต์ (ตัวเลขคือจำนวน PC/POS ของสาขานั้น)</div>
-    <div class="picker" id="picker"></div>
-  </div>
+  <details class="sec" open id="pickerSec">
+    <summary>👉 เลือกสาขาที่ต้องไป <span class="hint"></span><span class="arw">▶</span></summary>
+    <div class="sec-body">
+      <div class="pc-sub">แตะชื่อสาขาด้านล่างเพื่อเพิ่มเข้าเช็คลิสต์ (ตัวเลขคือจำนวน PC/POS ของสาขานั้น)</div>
+      <div class="picker" id="picker"></div>
+    </div>
+  </details>
 
   <div class="add-row">
     <input id="newBranch" type="text" placeholder="หรือพิมพ์ชื่อสาขาเอง" />
