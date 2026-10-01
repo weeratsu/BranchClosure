@@ -163,7 +163,7 @@
     </div>
   </details>
 
-  <details class="sec" open>
+  <details class="sec">
     <summary>🧳 ของที่ต้องเอาไป <span class="hint" style="margin-left:auto"></span><span class="branch-count" id="packCount" style="margin-left:8px">0/0</span><span class="arw" style="margin-left:8px">▶</span></summary>
     <div class="sec-body">
       <div id="packList"></div>
@@ -178,7 +178,7 @@
     </div>
   </details>
 
-  <details class="sec" open id="pickerSec">
+  <details class="sec" id="pickerSec">
     <summary>👉 เลือกสาขาที่ต้องไป <span class="hint"></span><span class="arw">▶</span></summary>
     <div class="sec-body">
       <div class="pc-sub">แตะชื่อสาขาด้านล่างเพื่อเพิ่มเข้าเช็คลิสต์ (ตัวเลขคือจำนวน PC/POS ของสาขานั้น)</div>
@@ -217,9 +217,9 @@
     { id:"keep_pc", text:"PC: เหลือ PC ไว้ที่ Back Office 1 ชุด", note:"ยืนยันกับ Store Manager ก่อนดำเนินการ" },
     { id:"pc_wrap", text:"PC: พัน Bubble Wrap ให้เรียบร้อย", note:"" },
     { id:"pc_label", text:"PC: ติด Sticker Label ที่ได้รับจากนัท", note:"ตามตัวอย่าง", ex:["example_pc_label.png","ตำแหน่งติด Label บน PC"] },
-    { id:"pc_hq", text:"PC: นำกลับมาที่ HQ (ทีม Helpdesk รอรับ)", note:"" },
     { id:"checklist", text:"กรอกข้อมูลใน Checklist ที่ได้รับให้ครบถ้วน", note:"" },
-    { id:"send_line", text:"ส่งไฟล์ Checklist ทาง Line Group ให้ปูนติดตาม", note:"ก่อนออกจากสาขา" }
+    { id:"send_line", text:"ส่งไฟล์ Checklist ทาง Line Group ให้ปูนติดตาม", note:"ก่อนออกจากสาขา" },
+    { id:"pc_hq", text:"PC: นำกลับมาที่ HQ (ทีม Helpdesk รอรับ)", note:"ขั้นตอนสุดท้าย — ทำงานในสาขาให้ครบก่อนขนกลับ" }
   ];
   const PACK = [
     { g:"🧰 เครื่องมือ (ตัด Cable tie / ถอดอุปกรณ์)", items:[{id:"screwdriver",text:"ไขควง"},{id:"cutter",text:"คัตเตอร์"},{id:"scissors",text:"กรรไกร"}]},
