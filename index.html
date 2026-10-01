@@ -127,8 +127,41 @@
   dialog img, dialog video { max-width: 100%; max-height: 72vh; display: block; border-radius: var(--radius-sm); }
   dialog .dlg-cap { font-size: 14px; font-weight: 600; margin-bottom: 8px; }
   dialog .dlg-close { position: absolute; top: 8px; right: 10px; background: rgba(0,0,0,0.5); color:#fff; border-radius: 100px; width: 32px; height: 32px; padding: 0; font-size: 18px; }
-  @media print { .toolbar, .del, .add-row, .picker, button, .progress-bar, .tip { display: none !important; }
-    .branch .checks, .sec-body { display: block !important; } details.sec > summary .arw { display: none; } body { padding: 0; } }
+  /* Report view (screen) */
+  .report-view { background: var(--bg); }
+  .report-toolbar { display:flex; gap:8px; margin: 4px 0 16px; }
+  .report-toolbar button { flex:0 0 auto; }
+  .rep-head h2 { font-size: 19px; margin: 0 0 2px; }
+  .rep-sub { font-size: 12.5px; color: var(--text-muted); margin-bottom: 16px; }
+  .rep-cards { display:flex; gap:10px; flex-wrap:wrap; margin-bottom: 18px; }
+  .rep-card { flex:1; min-width:120px; background: var(--surface); border:1px solid var(--border-light); border-radius: var(--radius); padding: 14px 16px; box-shadow: var(--shadow); }
+  .rep-card .rc-n { font-size: 22px; font-weight: 700; color: var(--primary-dark); font-variant-numeric: tabular-nums; }
+  .rep-card .rc-l { font-size: 12px; color: var(--text-sec); margin-top: 2px; }
+  .rep-branch { background: var(--surface); border:1px solid var(--border-light); border-radius: var(--radius); padding: 14px 16px; margin-bottom: 14px; box-shadow: var(--shadow); break-inside: avoid; }
+  .rb-head { display:flex; align-items:center; gap:10px; margin-bottom:4px; }
+  .rb-name { font-weight:700; font-size:15.5px; flex:1; }
+  .rb-badge { font-size:11px; font-weight:700; padding:2px 10px; border-radius: var(--radius-pill); }
+  .rb-badge.ok { background: var(--success-bg); color: var(--success); }
+  .rb-badge.wip { background: var(--warning-bg); color: var(--warning-text); }
+  .rb-times { font-size:12px; color: var(--text-muted); margin-bottom:8px; }
+  .rb-table { width:100%; border-collapse:collapse; font-size:12.5px; }
+  .rb-table th { text-align:left; color: var(--text-muted); font-weight:600; padding:5px 8px; border-bottom:1px solid var(--border); }
+  .rb-table td { padding:5px 8px; border-bottom:1px solid var(--border-light); vertical-align:top; }
+  .rb-table tr.d td { color: var(--text); }
+  .rb-table tr:not(.d) td { color: var(--text-muted); }
+  .rb-custom { color: var(--primary); font-size:11px; }
+  .rep-empty { color: var(--text-muted); text-align:center; padding:20px; }
+
+  /* Print: only the report prints (reportView is a sibling of .wrap) */
+  @media print {
+    body.report-mode .wrap { display: none !important; }
+    body.report-mode #reportView { display: block !important; }
+    body.report-mode .report-toolbar { display: none !important; }
+    .rep-card, .rep-branch { box-shadow:none; }
+    body { padding: 0; background:#fff; }
+  }
+  /* When report is open on screen, hide the normal content behind it */
+  body.report-mode .wrap { display: none; }
 </style>
 </head>
 <body>
@@ -203,7 +236,7 @@
   <div id="branches"></div>
 
   <div class="toolbar">
-    <button class="btn-ghost" onclick="window.print()">🖨️ พิมพ์ / PDF</button>
+    <button class="btn-ghost" onclick="openReport()">📋 ดูรายงาน / พิมพ์</button>
     <button class="btn-ghost" onclick="exportData()">⬇️ Export</button>
     <button class="btn-ghost" onclick="document.getElementById('importFile').click()">⬆️ Import</button>
     <input id="importFile" type="file" accept="application/json,.json" style="display:none" onchange="importData(event)">
@@ -213,6 +246,14 @@
   <div class="tip">💾 <b>Export / Import ไว้ทำอะไร?</b> ที่ติ๊กไว้ทั้งหมดจะเก็บอยู่ในเครื่อง/เบราว์เซอร์ที่ใช้เท่านั้น ไม่ได้ sync ขึ้นเซิร์ฟเวอร์ — <b>Export</b> = เซฟสถานะที่ติ๊กออกมาเป็นไฟล์ไว้สำรอง หรือย้ายไปเปิดต่อเครื่องอื่น (เช่น PC → มือถือ), <b>Import</b> = โหลดไฟล์นั้นกลับเข้ามาเพื่อกู้สถานะเดิม (จะเขียนทับที่ติ๊กไว้ในเครื่องนั้น)</div>
   <div class="tip">💡 <b>เปิดบนมือถือ:</b> บน iPhone เปิดใน Safari → ปุ่มแชร์ → <b>Add to Home Screen</b> เปิดเหมือนแอปเต็มจอ · ติ๊กแล้วเครื่องจำให้อัตโนมัติ</div>
   <footer>ก่อนออกจากสาขา อย่าลืมส่งไฟล์ Checklist ใน Line Group ให้ปูน</footer>
+</div>
+
+<div id="reportView" class="report-view" style="display:none">
+  <div class="report-toolbar">
+    <button class="btn-ghost" onclick="closeReport()">← กลับ</button>
+    <button class="btn-primary" onclick="window.print()">🖨️ พิมพ์ / บันทึก PDF</button>
+  </div>
+  <div id="reportBody"></div>
 </div>
 
 <dialog id="lb"><button class="dlg-close" onclick="document.getElementById('lb').close()">✕</button><div class="dlg-body"><div class="dlg-cap" id="lbCap"></div><div id="lbMedia"></div></div></dialog>
@@ -264,12 +305,12 @@
 
   const KEY = "branch_closure_2026_10_07";
   let state = load();
-  function load(){ try{ const s=JSON.parse(localStorage.getItem(KEY))||{}; if(!s.branches)s.branches=[]; if(!s.pack)s.pack={}; if(!s.customPack)s.customPack=[]; return s; }catch{ return {branches:[],pack:{},customPack:[]}; } }
+  function load(){ try{ const s=JSON.parse(localStorage.getItem(KEY))||{}; if(!s.branches)s.branches=[]; if(!s.pack)s.pack={}; if(!s.packTs)s.packTs={}; if(!s.customPack)s.customPack=[]; return s; }catch{ return {branches:[],pack:{},packTs:{},customPack:[]}; } }
   function save(){ localStorage.setItem(KEY, JSON.stringify(state)); }
 
   function zoom(el, cap){ const m=document.getElementById('lbMedia'); m.innerHTML='<img src="'+el.getAttribute('src')+'">'; document.getElementById('lbCap').textContent=cap||''; document.getElementById('lb').showModal(); }
 
-  function togglePack(id){ state.pack[id]=!state.pack[id]; save(); renderPack(); }
+  function togglePack(id){ if(state.pack[id]){ state.pack[id]=false; if(state.packTs) delete state.packTs[id]; } else { state.pack[id]=true; state.packTs=state.packTs||{}; state.packTs[id]=new Date().toISOString(); } save(); renderPack(); }
   function renderPack(){
     const root=document.getElementById("packList"); root.innerHTML=""; let done=0;
     PACK.forEach(grp=>{ const h=document.createElement("div"); h.className="pack-group"; h.textContent=grp.g; root.appendChild(h);
@@ -284,7 +325,7 @@
         const row=document.createElement("label"); row.className="check"+(on?" checked":"");
         row.innerHTML='<input type="checkbox"'+(on?" checked":"")+'><span class="body"><span class="txt"></span></span><button class="pack-del" title="ลบ">🗑️</button>';
         row.querySelector(".txt").textContent=it.text;
-        row.querySelector("input").onchange=()=>{ state.customPack[ci].done=!state.customPack[ci].done; save(); renderPack(); };
+        row.querySelector("input").onchange=()=>{ const it2=state.customPack[ci]; it2.done=!it2.done; it2.ts=it2.done?new Date().toISOString():null; save(); renderPack(); };
         row.querySelector(".pack-del").onclick=(e)=>{ e.preventDefault(); e.stopPropagation(); state.customPack.splice(ci,1); save(); renderPack(); };
         root.appendChild(row); }); }
     document.getElementById("packCount").textContent=done+"/"+(PACK_TOTAL+state.customPack.length);
@@ -313,15 +354,83 @@
 
   function delBranch(i){ if(confirm('ลบสาขา "'+state.branches[i].name+'" ?')){ state.branches.splice(i,1); save(); renderPicker(); render(); } }
   function toggleOpen(i){ state.branches[i].open=!state.branches[i].open; save(); render(); }
-  function toggleCheck(i,id){ const b=state.branches[i]; b.checks[id]=!b.checks[id]; save(); render(); }
-  function resetAll(){ if(confirm("รีเซ็ตทั้งหมด? ข้อมูลที่ติ๊กไว้จะหายทั้งหมด")){ state={branches:[],pack:{},customPack:[]}; save(); renderPack(); renderPicker(); render(); } }
+  function toggleCheck(i,id){ const b=state.branches[i]; if(b.checks[id]){ delete b.checks[id]; } else { b.checks[id]=new Date().toISOString(); } save(); render(); }
+  function resetAll(){ if(confirm("รีเซ็ตทั้งหมด? ข้อมูลที่ติ๊กไว้จะหายทั้งหมด")){ state={branches:[],pack:{},packTs:{},customPack:[]}; save(); renderPack(); renderPicker(); render(); } }
 
   function exportData(){ const blob=new Blob([JSON.stringify(state,null,2)],{type:"application/json"}); const url=URL.createObjectURL(blob);
     const a=document.createElement("a"); a.href=url; a.download="checklist_ปิดสาขา_7ตค.json"; document.body.appendChild(a); a.click(); document.body.removeChild(a); URL.revokeObjectURL(url); }
   function importData(ev){ const f=ev.target.files[0]; if(!f)return; const r=new FileReader();
     r.onload=()=>{ try{ const d=JSON.parse(r.result); if(!d||typeof d!=="object")throw 0;
-      state={branches:Array.isArray(d.branches)?d.branches:[], pack:(d.pack&&typeof d.pack==="object")?d.pack:{}, customPack:Array.isArray(d.customPack)?d.customPack:[]}; save(); renderPack(); renderPicker(); render(); alert("นำเข้าข้อมูลเรียบร้อย ✅"); }
+      state={branches:Array.isArray(d.branches)?d.branches:[], pack:(d.pack&&typeof d.pack==="object")?d.pack:{}, packTs:(d.packTs&&typeof d.packTs==="object")?d.packTs:{}, customPack:Array.isArray(d.customPack)?d.customPack:[]}; save(); renderPack(); renderPicker(); render(); alert("นำเข้าข้อมูลเรียบร้อย ✅"); }
       catch(e){ alert("ไฟล์ไม่ถูกต้อง"); } ev.target.value=""; }; r.readAsText(f); }
+
+  // dd/mm/yyyy HH:MM formatter for timestamps
+  function fmtTs(iso){ if(!iso) return "-"; const d=new Date(iso); if(isNaN(d)) return "-";
+    const p=n=>String(n).padStart(2,"0");
+    return p(d.getDate())+"/"+p(d.getMonth()+1)+"/"+d.getFullYear()+" "+p(d.getHours())+":"+p(d.getMinutes()); }
+
+  // Collect all branch check timestamps (sorted) for start/finish
+  function branchTimes(b){ const ts=STEPS.map(s=>b.checks[s.id]).filter(x=>typeof x==="string").sort();
+    return { first: ts[0]||null, last: ts[ts.length-1]||null, n: ts.length }; }
+
+  function buildReport(){
+    const now=new Date();
+    const p=n=>String(n).padStart(2,"0");
+    const genAt=p(now.getDate())+"/"+p(now.getMonth()+1)+"/"+now.getFullYear()+" "+p(now.getHours())+":"+p(now.getMinutes());
+    const total=state.branches.length;
+    let doneBranches=0, totalSteps=0, doneSteps=0;
+    state.branches.forEach(b=>{ totalSteps+=STEPS.length; const n=STEPS.filter(s=>b.checks[s.id]).length; doneSteps+=n; if(n===STEPS.length)doneBranches++; });
+    // pack summary
+    const packDone=PACK.reduce((a,g)=>a+g.items.filter(it=>state.pack[it.id]).length,0)
+                   + state.customPack.filter(it=>it.done).length;
+    const packTotal=PACK_TOTAL+state.customPack.length;
+
+    let h='<div class="rep">';
+    h+='<div class="rep-head"><h2>📋 รายงานการเก็บอุปกรณ์ปิดสาขา</h2>'
+      +'<div class="rep-sub">วันพุธที่ 7 ตุลาคม 2026 · สร้างรายงานเมื่อ '+genAt+'</div></div>';
+
+    // Overview
+    h+='<div class="rep-cards">'
+      +'<div class="rep-card"><div class="rc-n">'+doneBranches+'/'+total+'</div><div class="rc-l">สาขาเสร็จสมบูรณ์</div></div>'
+      +'<div class="rep-card"><div class="rc-n">'+doneSteps+'/'+totalSteps+'</div><div class="rc-l">ขั้นตอนที่ทำแล้ว</div></div>'
+      +'<div class="rep-card"><div class="rc-n">'+packDone+'/'+packTotal+'</div><div class="rc-l">ของที่เตรียม</div></div>'
+      +'</div>';
+
+    if(!total){ h+='<p class="rep-empty">ยังไม่ได้เลือกสาขา</p></div>'; return h; }
+
+    // Per-branch
+    state.branches.forEach(b=>{
+      const t=branchTimes(b); const nDone=STEPS.filter(s=>b.checks[s.id]).length;
+      const complete=nDone===STEPS.length;
+      h+='<div class="rep-branch">';
+      h+='<div class="rb-head"><span class="rb-name"></span><span class="rb-badge '+(complete?"ok":"wip")+'">'+(complete?"เสร็จ":nDone+"/"+STEPS.length)+'</span></div>';
+      const meta=[]; if(b.pc!=null)meta.push("PC "+b.pc); if(b.pos!=null)meta.push("POS "+b.pos);
+      h+='<div class="rb-times">เริ่ม: '+fmtTs(t.first)+' · เสร็จล่าสุด: '+fmtTs(t.last)+(meta.length?' · '+meta.join(" / "):'')+'</div>';
+      h+='<table class="rb-table"><thead><tr><th>ขั้นตอน</th><th>สถานะ</th><th>เวลา</th></tr></thead><tbody>';
+      STEPS.forEach((s,idx)=>{ const v=b.checks[s.id]; const done=!!v;
+        h+='<tr class="'+(done?"d":"")+'"><td>'+(idx+1)+'. '+esc(s.text)+'</td><td>'+(done?"✓":"—")+'</td><td>'+(typeof v==="string"?fmtTs(v):"-")+'</td></tr>'; });
+      h+='</tbody></table></div>';
+      // set the name safely after via placeholder replacement is messy; use esc inline
+      h=h.replace('<span class="rb-name"></span>','<span class="rb-name">'+esc(b.name)+'</span>');
+    });
+
+    // Pack detail
+    h+='<div class="rep-branch"><div class="rb-head"><span class="rb-name">🧳 ของที่ต้องเอาไป</span><span class="rb-badge '+(packDone===packTotal?"ok":"wip")+'">'+packDone+'/'+packTotal+'</span></div>';
+    h+='<table class="rb-table"><thead><tr><th>รายการ</th><th>สถานะ</th><th>เวลา</th></tr></thead><tbody>';
+    PACK.forEach(g=>{ g.items.forEach(it=>{ const done=!!state.pack[it.id]; const ts=state.packTs&&state.packTs[it.id];
+      h+='<tr class="'+(done?"d":"")+'"><td>'+esc(it.text)+'</td><td>'+(done?"✓":"—")+'</td><td>'+(done&&ts?fmtTs(ts):"-")+'</td></tr>'; }); });
+    state.customPack.forEach(it=>{ h+='<tr class="'+(it.done?"d":"")+'"><td>'+esc(it.text)+' <span class="rb-custom">(เพิ่มเอง)</span></td><td>'+(it.done?"✓":"—")+'</td><td>'+(it.done&&it.ts?fmtTs(it.ts):"-")+'</td></tr>'; });
+    h+='</tbody></table></div>';
+
+    h+='</div>';
+    return h;
+  }
+  function esc(s){ return String(s).replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;"); }
+
+  function openReport(){ document.getElementById("reportBody").innerHTML=buildReport();
+    document.getElementById("reportView").style.display="block"; document.body.classList.add("report-mode");
+    window.scrollTo(0,0); }
+  function closeReport(){ document.getElementById("reportView").style.display="none"; document.body.classList.remove("report-mode"); }
 
   function branchDone(b){ return STEPS.every(s=>b.checks[s.id]); }
   function render(){
