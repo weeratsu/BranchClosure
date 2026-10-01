@@ -8,6 +8,10 @@
 <meta name="apple-mobile-web-app-title" content="ปิดสาขา">
 <meta name="theme-color" content="#9333ea">
 <title>เช็คลิสต์ปิดสาขา — 7 ต.ค. 2026</title>
+<link rel="icon" type="image/png" sizes="32x32" href="images/favicon-32.png">
+<link rel="icon" type="image/png" sizes="16x16" href="images/favicon-16.png">
+<link rel="apple-touch-icon" href="images/apple-touch-icon.png">
+<link rel="manifest" href="manifest.webmanifest">
 <style>
   :root {
     --bg: #faf9fc; --surface: #ffffff; --text: #1a1a1a; --text-sec: #5e5e5e; --text-muted: #9ca3af;
@@ -47,6 +51,12 @@
   .timeline li { margin-bottom: 5px; }
   .timeline b { color: var(--primary); }
   .pack-group { font-size: 12px; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.04em; margin: 12px 0 2px; }
+  .pack-del { background:none; border:none; color:var(--text-muted); font-size:17px; padding:2px 6px; margin-left:auto; flex-shrink:0; }
+  .pack-del:hover { color: var(--error); }
+  .pack-add { display:flex; gap:8px; margin-top:12px; }
+  .pack-add input { flex:1; padding:11px 13px; font-size:15px; font-family:var(--font); border:1px solid var(--border);
+    border-radius:var(--radius-sm); background:var(--surface); color:var(--text); }
+  .pack-add button { padding:11px 16px; font-size:14px; }
   .check { display: flex; align-items: flex-start; gap: 12px; padding: 13px 4px; border-bottom: 1px solid var(--border-light);
     font-size: 15px; cursor: pointer; user-select: none; }
   .check:last-child { border-bottom: none; }
@@ -159,6 +169,10 @@
     <summary>🧳 ของที่ต้องเอาไป <span class="hint" style="margin-left:auto"></span><span class="branch-count" id="packCount" style="margin-left:8px">0/0</span><span class="arw" style="margin-left:8px">▶</span></summary>
     <div class="sec-body">
       <div id="packList"></div>
+      <div class="pack-add">
+        <input id="newPackItem" type="text" placeholder="เพิ่มของที่ต้องเอาไปเอง เช่น ถุงมือ, ไฟฉาย" />
+        <button class="btn-primary" onclick="addPackItem()">+ เพิ่ม</button>
+      </div>
       <div class="contacts">
         <b>ติดต่อ:</b> ปูน / พี่เจนนี่ (ปรับแก้หน้างาน) · คุณชัย หรือ นัท (อุปกรณ์/สถานที่) · คุณอารีย์ (Sticker POS)
         <br>ถ้าไม่มั่นใจเรื่องสถานที่สาขา → ตรวจสอบล่วงหน้าและแจ้งคุณชัยก่อนวันงาน
@@ -197,13 +211,13 @@
 <script>
   const STEPS = [
     { id:"confirm_adjust", text:"รอปูนแจ้งใน Line Group ว่าสาขานี้ไม่มีรายการต้อง Adjust แล้ว", note:"เริ่มเก็บอุปกรณ์ได้หลังปูนยืนยันเท่านั้น" },
-    { id:"keep_pc", text:"เหลือ PC ไว้ที่ Back Office 1 ชุด", note:"ยืนยันกับ Store Manager ก่อนดำเนินการ" },
+    { id:"lan", text:"Switch: ถอดสาย LAN ออกจาก Port 23 และ 24", note:"ถอดที่ Switch (ไม่ใช่ที่ PC) — ตามตัวอย่าง", ex:["example_lan_port_23_24.png","Port 23 & 24"] },
     { id:"pos_box", text:"POS: ใส่กล่อง วางตามจุดที่ Counter", note:"เช็กตำแหน่งกับ Store Manager", ex:["example_pos_in_box.jpg","POS ใส่กล่อง"] },
     { id:"pos_label", text:"POS: ระบุหมายเลขสาขา + หมายเลขเครื่องบนกล่อง", note:"ติด Sticker ของคุณอารีย์ ถ้าไม่มีให้เขียนบนกล่องแทน (สำหรับ Aeon)", ex:["example_box_labeled.jpg","กล่องเขียนรหัสเครื่อง"] },
+    { id:"keep_pc", text:"PC: เหลือ PC ไว้ที่ Back Office 1 ชุด", note:"ยืนยันกับ Store Manager ก่อนดำเนินการ" },
     { id:"pc_wrap", text:"PC: พัน Bubble Wrap ให้เรียบร้อย", note:"" },
     { id:"pc_label", text:"PC: ติด Sticker Label ที่ได้รับจากนัท", note:"ตามตัวอย่าง", ex:["example_pc_label.png","ตำแหน่งติด Label บน PC"] },
-    { id:"lan", text:"ถอดสาย LAN ออกจาก Port 23 และ 24", note:"ตามตัวอย่าง", ex:["example_lan_port_23_24.png","Port 23 & 24"] },
-    { id:"pc_hq", text:"นำ PC กลับมาที่ HQ (ทีม Helpdesk รอรับ)", note:"" },
+    { id:"pc_hq", text:"PC: นำกลับมาที่ HQ (ทีม Helpdesk รอรับ)", note:"" },
     { id:"checklist", text:"กรอกข้อมูลใน Checklist ที่ได้รับให้ครบถ้วน", note:"" },
     { id:"send_line", text:"ส่งไฟล์ Checklist ทาง Line Group ให้ปูนติดตาม", note:"ก่อนออกจากสาขา" }
   ];
@@ -241,7 +255,7 @@
 
   const KEY = "branch_closure_2026_10_07";
   let state = load();
-  function load(){ try{ const s=JSON.parse(localStorage.getItem(KEY))||{}; if(!s.branches)s.branches=[]; if(!s.pack)s.pack={}; return s; }catch{ return {branches:[],pack:{}}; } }
+  function load(){ try{ const s=JSON.parse(localStorage.getItem(KEY))||{}; if(!s.branches)s.branches=[]; if(!s.pack)s.pack={}; if(!s.customPack)s.customPack=[]; return s; }catch{ return {branches:[],pack:{},customPack:[]}; } }
   function save(){ localStorage.setItem(KEY, JSON.stringify(state)); }
 
   function zoom(el, cap){ const m=document.getElementById('lbMedia'); m.innerHTML='<img src="'+el.getAttribute('src')+'">'; document.getElementById('lbCap').textContent=cap||''; document.getElementById('lb').showModal(); }
@@ -254,8 +268,20 @@
         const row=document.createElement("label"); row.className="check"+(on?" checked":"");
         row.innerHTML='<input type="checkbox"'+(on?" checked":"")+'><span class="body"><span class="txt"></span></span>';
         row.querySelector(".txt").textContent=it.text; row.querySelector("input").onchange=()=>togglePack(it.id); root.appendChild(row); }); });
-    document.getElementById("packCount").textContent=done+"/"+PACK_TOTAL;
+    // Custom (user-added) items
+    if(state.customPack.length){
+      const h=document.createElement("div"); h.className="pack-group"; h.textContent="➕ เพิ่มเอง"; root.appendChild(h);
+      state.customPack.forEach((it,ci)=>{ const on=!!it.done; if(on)done++;
+        const row=document.createElement("label"); row.className="check"+(on?" checked":"");
+        row.innerHTML='<input type="checkbox"'+(on?" checked":"")+'><span class="body"><span class="txt"></span></span><button class="pack-del" title="ลบ">🗑️</button>';
+        row.querySelector(".txt").textContent=it.text;
+        row.querySelector("input").onchange=()=>{ state.customPack[ci].done=!state.customPack[ci].done; save(); renderPack(); };
+        row.querySelector(".pack-del").onclick=(e)=>{ e.preventDefault(); e.stopPropagation(); state.customPack.splice(ci,1); save(); renderPack(); };
+        root.appendChild(row); }); }
+    document.getElementById("packCount").textContent=done+"/"+(PACK_TOTAL+state.customPack.length);
   }
+  function addPackItem(){ const inp=document.getElementById("newPackItem"); const t=inp.value.trim(); if(!t){inp.focus();return;}
+    state.customPack.push({text:t,done:false}); inp.value=""; save(); renderPack(); }
 
   function renderPicker(){
     const root=document.getElementById("picker"); root.innerHTML="";
@@ -281,13 +307,13 @@
   function delBranch(i){ if(confirm('ลบสาขา "'+state.branches[i].name+'" ?')){ state.branches.splice(i,1); save(); renderPicker(); render(); } }
   function toggleOpen(i){ state.branches[i].open=!state.branches[i].open; save(); render(); }
   function toggleCheck(i,id){ const b=state.branches[i]; b.checks[id]=!b.checks[id]; save(); render(); }
-  function resetAll(){ if(confirm("รีเซ็ตทั้งหมด? ข้อมูลที่ติ๊กไว้จะหายทั้งหมด")){ state={branches:[],pack:{}}; save(); renderPack(); renderPicker(); render(); } }
+  function resetAll(){ if(confirm("รีเซ็ตทั้งหมด? ข้อมูลที่ติ๊กไว้จะหายทั้งหมด")){ state={branches:[],pack:{},customPack:[]}; save(); renderPack(); renderPicker(); render(); } }
 
   function exportData(){ const blob=new Blob([JSON.stringify(state,null,2)],{type:"application/json"}); const url=URL.createObjectURL(blob);
     const a=document.createElement("a"); a.href=url; a.download="checklist_ปิดสาขา_7ตค.json"; document.body.appendChild(a); a.click(); document.body.removeChild(a); URL.revokeObjectURL(url); }
   function importData(ev){ const f=ev.target.files[0]; if(!f)return; const r=new FileReader();
     r.onload=()=>{ try{ const d=JSON.parse(r.result); if(!d||typeof d!=="object")throw 0;
-      state={branches:Array.isArray(d.branches)?d.branches:[], pack:(d.pack&&typeof d.pack==="object")?d.pack:{}}; save(); renderPack(); renderPicker(); render(); alert("นำเข้าข้อมูลเรียบร้อย ✅"); }
+      state={branches:Array.isArray(d.branches)?d.branches:[], pack:(d.pack&&typeof d.pack==="object")?d.pack:{}, customPack:Array.isArray(d.customPack)?d.customPack:[]}; save(); renderPack(); renderPicker(); render(); alert("นำเข้าข้อมูลเรียบร้อย ✅"); }
       catch(e){ alert("ไฟล์ไม่ถูกต้อง"); } ev.target.value=""; }; r.readAsText(f); }
 
   function branchDone(b){ return STEPS.every(s=>b.checks[s.id]); }
@@ -326,6 +352,7 @@
   }
 
   document.getElementById("newBranch").addEventListener("keydown",e=>{ if(e.key==="Enter")addBranch(); });
+  document.getElementById("newPackItem").addEventListener("keydown",e=>{ if(e.key==="Enter")addPackItem(); });
   renderPack(); renderPicker(); render();
 </script>
 </body>
