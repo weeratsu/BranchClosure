@@ -150,7 +150,7 @@
     </div>
   </details>
 
-  <div class="section-label">เลือกสาขา (แตะเพื่อเพิ่ม) — 🟠 = สาขาของคุณ</div>
+  <div class="section-label">เลือกสาขา (แตะเพื่อเพิ่ม)</div>
   <div class="picker" id="picker"></div>
 
   <div class="add-row">
@@ -194,38 +194,34 @@
   ];
   const PACK_TOTAL = PACK.reduce((n,g)=>n+g.items.length,0);
   const ALL_BRANCHES = [
-    {no:1,code:"4.0",name:"Pattanakarn (24 Hours) / พัฒนาการ",pc:7,pos:9,group:"Attanop",me:false},
-    {no:2,code:"6.0",name:"Nawamin  (24 Hours) / นวมินทร์",pc:7,pos:8,group:"Attanop",me:false},
-    {no:3,code:"12.0",name:"Sukhumvit 71  (24 Hours) / สุขุมวิท 71",pc:8,pos:8,group:"Parkpoom",me:false},
-    {no:4,code:"14.0",name:"Rangsit Klong 2  ( 7.00-23.00 ) / รังสิต คลอง 2",pc:6,pos:6,group:"Tanaspon",me:false},
-    {no:5,code:"16.0",name:"Panya market   ( 7.00-23.00 ) / ปัญญา มาร์เก็ต",pc:7,pos:6,group:"Sujin",me:false},
-    {no:6,code:"19.0",name:"Parklane Ekkamai  ( 7.00-23.00 ) / ปาร์คเลน เอกมัย",pc:7,pos:6,group:"Chatchai",me:false},
-    {no:7,code:"21.0",name:"Ekkamai Ramintra  ( 7.00-23.00 ) / เอกมัย รามอินทรา",pc:7,pos:8,group:"Poonsap",me:false},
-    {no:8,code:"22.0",name:"Ratchaphruek  ( 7.00-01.00 ) / ราชพฤกษ์",pc:7,pos:5,group:"Anusit",me:false},
-    {no:9,code:"24.0",name:"Gateway Ekkamai ( 7.00-22.00 ) / เกตเวย์ เอกมัย",pc:7,pos:7,group:"Chatchai",me:false},
-    {no:10,code:"25.0",name:"Wanghin Plaza Lagoon (24 Hours) / วังหิน พลาซ่า ลากูน",pc:7,pos:7,group:"Weerat",me:true},
-    {no:11,code:"27.0",name:"Sriracha (7.00-23.00) / ศรีราชา",pc:7,pos:8,group:"wacharachai",me:false},
-    {no:12,code:"31.0",name:"The Nine Rama 9  ( 7.00-23.00 ) / เดอะ ไนท์ พระราม 9",pc:7,pos:7,group:"Poonsap",me:false},
-    {no:13,code:"33.0",name:"Kubon  (24 Hours) / คู้บอน",pc:7,pos:9,group:"Sujin",me:false},
-    {no:14,code:"34.0",name:"Kanlaprapruck Metro West ( 7.00-23.00 ) / กัลปพฤกษ์ เมโทรเวสต์",pc:6,pos:5,group:"Somphop",me:false},
-    {no:15,code:"36.0",name:"The Scene Town In Town  ( 7.00-23.00 ) / เดอะซีน ทาวน์อินทาวน์",pc:2,pos:3,group:"Weerat",me:true},
-    {no:16,code:"40.0",name:"Ladkrabang V Market  ( 7.00-23.00 ) / ลาดกระบัง วี มาร์เก็ต",pc:7,pos:5,group:"Attanop",me:false},
-    {no:17,code:"42.0",name:"AEON Sriracha Shopping Center ( 7.00-23.00 ) / อิออน ศรีราชา ช้อปปิ้งเซ็นเตอร์",pc:7,pos:6,group:"wacharachai",me:false},
-    {no:18,code:"44.0",name:"Sriracha Atara  ( 7.00-24.00 ) / ศรีราชา อาทาระ",pc:7,pos:5,group:"wacharachai",me:false},
-    {no:19,code:"46.0",name:"Phaholyothin 58  ( 7.00-23.00 ) / พหลโยธิน 58",pc:6,pos:7,group:"Tanaspon",me:false},
-    {no:20,code:"47.0",name:"Muang Thong Thani Cosmo (24 Hours) / เมืองทองธานี คอสโม",pc:7,pos:10,group:"Somphop , Anusit",me:false},
-    {no:21,code:"48.0",name:"Prasarnmit Plaza  ( 7.00-23.00 ) / ประสานมิตร  พลาซ่า",pc:3,pos:3,group:"Parkpoom",me:false},
-    {no:22,code:"49.0",name:"Latsawai Market  ( 7.00-23.00 ) / ลาดสวาย",pc:7,pos:7,group:"Tanaspon",me:false},
-    {no:23,code:"50.0",name:"BEE GEE PLAZA  (7.00-23.00 ) บางกรวย",pc:7,pos:7,group:"นัท helpdesk",me:false}
+    {no:1,code:"04",name:"Pattanakarn (24 Hours) / พัฒนาการ",pc:7,pos:9},
+    {no:2,code:"06",name:"Nawamin  (24 Hours) / นวมินทร์",pc:7,pos:8},
+    {no:3,code:"12",name:"Sukhumvit 71  (24 Hours) / สุขุมวิท 71",pc:8,pos:8},
+    {no:4,code:"14",name:"Rangsit Klong 2  ( 7.00-23.00 ) / รังสิต คลอง 2",pc:6,pos:6},
+    {no:5,code:"16",name:"Panya market   ( 7.00-23.00 ) / ปัญญา มาร์เก็ต",pc:7,pos:6},
+    {no:6,code:"19",name:"Parklane Ekkamai  ( 7.00-23.00 ) / ปาร์คเลน เอกมัย",pc:7,pos:6},
+    {no:7,code:"21",name:"Ekkamai Ramintra  ( 7.00-23.00 ) / เอกมัย รามอินทรา",pc:7,pos:8},
+    {no:8,code:"22",name:"Ratchaphruek  ( 7.00-01.00 ) / ราชพฤกษ์",pc:7,pos:5},
+    {no:9,code:"24",name:"Gateway Ekkamai ( 7.00-22.00 ) / เกตเวย์ เอกมัย",pc:7,pos:7},
+    {no:10,code:"25",name:"Wanghin Plaza Lagoon (24 Hours) / วังหิน พลาซ่า ลากูน",pc:7,pos:7},
+    {no:11,code:"27",name:"Sriracha (7.00-23.00) / ศรีราชา",pc:7,pos:8},
+    {no:12,code:"31",name:"The Nine Rama 9  ( 7.00-23.00 ) / เดอะ ไนท์ พระราม 9",pc:7,pos:7},
+    {no:13,code:"33",name:"Kubon  (24 Hours) / คู้บอน",pc:7,pos:9},
+    {no:14,code:"34",name:"Kanlaprapruck Metro West ( 7.00-23.00 ) / กัลปพฤกษ์ เมโทรเวสต์",pc:6,pos:5},
+    {no:15,code:"36",name:"The Scene Town In Town  ( 7.00-23.00 ) / เดอะซีน ทาวน์อินทาวน์",pc:2,pos:3},
+    {no:16,code:"40",name:"Ladkrabang V Market  ( 7.00-23.00 ) / ลาดกระบัง วี มาร์เก็ต",pc:7,pos:5},
+    {no:17,code:"42",name:"AEON Sriracha Shopping Center ( 7.00-23.00 ) / อิออน ศรีราชา ช้อปปิ้งเซ็นเตอร์",pc:7,pos:6},
+    {no:18,code:"44",name:"Sriracha Atara  ( 7.00-24.00 ) / ศรีราชา อาทาระ",pc:7,pos:5},
+    {no:19,code:"46",name:"Phaholyothin 58  ( 7.00-23.00 ) / พหลโยธิน 58",pc:6,pos:7},
+    {no:20,code:"47",name:"Muang Thong Thani Cosmo (24 Hours) / เมืองทองธานี คอสโม",pc:7,pos:10},
+    {no:21,code:"48",name:"Prasarnmit Plaza  ( 7.00-23.00 ) / ประสานมิตร  พลาซ่า",pc:3,pos:3},
+    {no:22,code:"49",name:"Latsawai Market  ( 7.00-23.00 ) / ลาดสวาย",pc:7,pos:7},
+    {no:23,code:"50",name:"BEE GEE PLAZA  (7.00-23.00 ) บางกรวย",pc:7,pos:7}
   ];
 
   const KEY = "branch_closure_2026_10_07";
-  // สาขาที่ Weerat รับผิดชอบ — ใส่ไว้เป็นค่าเริ่มต้นตอนเปิดครั้งแรก
-  const MY_BRANCHES = ALL_BRANCHES.filter(b=>b.me).map(b=>({
-    name:"#"+b.code+" "+b.name.split("/").pop().trim(), open:false, checks:{}, pc:b.pc, pos:b.pos, group:b.group
-  }));
   let state = load();
-  function load(){ try{ const s=JSON.parse(localStorage.getItem(KEY)); if(!s){ return {branches:MY_BRANCHES.slice(), pack:{}}; } if(!s.branches)s.branches=[]; if(!s.pack)s.pack={}; return s; }catch{ return {branches:MY_BRANCHES.slice(),pack:{}}; } }
+  function load(){ try{ const s=JSON.parse(localStorage.getItem(KEY))||{}; if(!s.branches)s.branches=[]; if(!s.pack)s.pack={}; return s; }catch{ return {branches:[],pack:{}}; } }
   function save(){ localStorage.setItem(KEY, JSON.stringify(state)); }
 
   function zoom(el, cap){ const m=document.getElementById('lbMedia'); m.innerHTML='<img src="'+el.getAttribute('src')+'">'; document.getElementById('lbCap').textContent=cap||''; document.getElementById('lb').showModal(); }
@@ -247,9 +243,9 @@
     ALL_BRANCHES.forEach(br=>{
       const label="#"+br.code+" "+br.name.split("/").pop().trim();
       const chip=document.createElement("button");
-      chip.className="chip"+(br.me?" me":"")+(added.has(label)?" added":"");
-      chip.textContent=(br.me?"🟠 ":"")+label;
-      chip.onclick=()=>{ if(added.has(label))return; state.branches.push({name:label, open:false, checks:{}, pc:br.pc, pos:br.pos, group:br.group}); save(); renderPicker(); render(); };
+      chip.className="chip"+(added.has(label)?" added":"");
+      chip.textContent=label;
+      chip.onclick=()=>{ if(added.has(label))return; state.branches.push({name:label, open:false, checks:{}, pc:br.pc, pos:br.pos}); save(); renderPicker(); render(); };
       root.appendChild(chip);
     });
   }
@@ -274,9 +270,8 @@
     state.branches.forEach((b,i)=>{
       const done=branchDone(b); if(done)doneCount++;
       const checkedN=STEPS.filter(s=>b.checks[s.id]).length;
-      const isMe=b.group&&b.group.toLowerCase().includes("weerat");
       const card=document.createElement("div");
-      card.className="branch"+(b.open?" open":"")+(done?" done":"")+(isMe?" me":"");
+      card.className="branch"+(b.open?" open":"")+(done?" done":"");
       const head=document.createElement("div"); head.className="branch-head";
       head.innerHTML='<span class="chev">▶</span><span class="branch-name"></span><span class="branch-count">'+checkedN+'/'+STEPS.length+'</span><span class="pill '+(done?'done':'')+'">'+(done?'✓ เสร็จ':'กำลังทำ')+'</span><button class="del" title="ลบ">🗑️</button>';
       head.querySelector(".branch-name").textContent=b.name;
@@ -284,7 +279,7 @@
       head.querySelector(".del").onclick=(e)=>{ e.stopPropagation(); delBranch(i); };
       card.appendChild(head);
       if(b.pc!=null||b.pos!=null){ const meta=document.createElement("div"); meta.className="meta";
-        meta.textContent="PC "+(b.pc??"-")+" · POS "+(b.pos??"-")+(b.group?(" · "+b.group):""); card.appendChild(meta); }
+        meta.textContent="PC "+(b.pc??"-")+" · POS "+(b.pos??"-"); card.appendChild(meta); }
       const checks=document.createElement("div"); checks.className="checks";
       STEPS.forEach(s=>{ const on=!!b.checks[s.id];
         const row=document.createElement("label"); row.className="check"+(on?" checked":"");

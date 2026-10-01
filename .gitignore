@@ -1,0 +1,13 @@
+# เอกสารอ้างอิง/แผนงาน — ไม่ควรขึ้น repo สาธารณะ (มีรายชื่อสาขา ที่อยู่ ฯลฯ)
+files/
+
+# ไฟล์สถานะที่ Export ออกมา
+checklist_*.json
+*.json
+
+# OS / editor
+.DS_Store
+Thumbs.db
+desktop.ini
+.vscode/
+.idea/
