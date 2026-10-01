@@ -145,6 +145,21 @@
   </details>
 
   <details class="sec">
+    <summary>🧳 ของที่ต้องเอาไป <span class="hint" style="margin-left:auto"></span><span class="branch-count" id="packCount" style="margin-left:8px">0/0</span><span class="arw" style="margin-left:8px">▶</span></summary>
+    <div class="sec-body">
+      <div id="packList"></div>
+      <div class="pack-add">
+        <input id="newPackItem" type="text" placeholder="เพิ่มของที่ต้องเอาไปเอง เช่น ถุงมือ, ไฟฉาย" />
+        <button class="btn-primary" onclick="addPackItem()">+ เพิ่ม</button>
+      </div>
+      <div class="contacts">
+        <b>ติดต่อ:</b> ปูน / พี่เจนนี่ (ปรับแก้หน้างาน) · คุณชัย หรือ นัท (อุปกรณ์/สถานที่) · คุณอารีย์ (Sticker POS)
+        <br>ถ้าไม่มั่นใจเรื่องสถานที่สาขา → ตรวจสอบล่วงหน้าและแจ้งคุณชัยก่อนวันงาน
+      </div>
+    </div>
+  </details>
+
+  <details class="sec">
     <summary>🖼️ ตัวอย่าง & วิธีทำ <span class="hint"></span><span class="arw">▶</span></summary>
     <div class="sec-body">
       <div class="pack-group">POS — ใส่กล่อง & เขียนรหัส</div>
@@ -163,21 +178,6 @@
     </div>
   </details>
 
-  <details class="sec">
-    <summary>🧳 ของที่ต้องเอาไป <span class="hint" style="margin-left:auto"></span><span class="branch-count" id="packCount" style="margin-left:8px">0/0</span><span class="arw" style="margin-left:8px">▶</span></summary>
-    <div class="sec-body">
-      <div id="packList"></div>
-      <div class="pack-add">
-        <input id="newPackItem" type="text" placeholder="เพิ่มของที่ต้องเอาไปเอง เช่น ถุงมือ, ไฟฉาย" />
-        <button class="btn-primary" onclick="addPackItem()">+ เพิ่ม</button>
-      </div>
-      <div class="contacts">
-        <b>ติดต่อ:</b> ปูน / พี่เจนนี่ (ปรับแก้หน้างาน) · คุณชัย หรือ นัท (อุปกรณ์/สถานที่) · คุณอารีย์ (Sticker POS)
-        <br>ถ้าไม่มั่นใจเรื่องสถานที่สาขา → ตรวจสอบล่วงหน้าและแจ้งคุณชัยก่อนวันงาน
-      </div>
-    </div>
-  </details>
-
   <details class="sec" id="pickerSec">
     <summary>👉 เลือกสาขาที่ต้องไป <span class="hint"></span><span class="arw">▶</span></summary>
     <div class="sec-body">
@@ -186,10 +186,6 @@
     </div>
   </details>
 
-  <div class="add-row">
-    <input id="newBranch" type="text" placeholder="หรือพิมพ์ชื่อสาขาเอง" />
-    <button class="btn-primary" onclick="addBranch()">+ เพิ่ม</button>
-  </div>
 
   <div id="branches"></div>
 
@@ -302,8 +298,6 @@
     });
   }
 
-  function addBranch(){ const inp=document.getElementById("newBranch"); const name=inp.value.trim(); if(!name){inp.focus();return;}
-    state.branches.push({name,open:true,checks:{}}); inp.value=""; save(); renderPicker(); render(); }
   function delBranch(i){ if(confirm('ลบสาขา "'+state.branches[i].name+'" ?')){ state.branches.splice(i,1); save(); renderPicker(); render(); } }
   function toggleOpen(i){ state.branches[i].open=!state.branches[i].open; save(); render(); }
   function toggleCheck(i,id){ const b=state.branches[i]; b.checks[id]=!b.checks[id]; save(); render(); }
@@ -351,7 +345,6 @@
     document.getElementById("ovBar").style.width=total?(doneCount/total*100)+"%":"0%";
   }
 
-  document.getElementById("newBranch").addEventListener("keydown",e=>{ if(e.key==="Enter")addBranch(); });
   document.getElementById("newPackItem").addEventListener("keydown",e=>{ if(e.key==="Enter")addPackItem(); });
   renderPack(); renderPicker(); render();
 </script>
