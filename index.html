@@ -36,8 +36,11 @@
   details.sec > summary { list-style: none; cursor: pointer; padding: 14px 16px; font-weight: 600; font-size: 15.5px;
     display: flex; align-items: center; gap: 8px; }
   details.sec > summary::-webkit-details-marker { display: none; }
-  details.sec > summary .arw { margin-left: auto; color: var(--text-muted); font-size: 13px; transition: transform 0.2s; }
+  details.sec > summary .arw { margin-left: auto; color: var(--primary); font-size: 15px; transition: transform 0.2s; font-weight:700; }
   details.sec[open] > summary .arw { transform: rotate(90deg); }
+  details.sec > summary .hint { font-size: 11px; color: var(--text-muted); font-weight: 500; margin-left: 6px; }
+  details.sec[open] > summary .hint::after { content: "แตะเพื่อย่อ"; }
+  details.sec:not([open]) > summary .hint::after { content: "แตะเพื่อขยาย"; }
   .sec-body { padding: 0 16px 14px; }
   .timeline { background: var(--primary-bg); }
   .timeline ul { margin: 2px 0 0; padding-left: 20px; font-size: 14px; }
@@ -63,11 +66,24 @@
   .btn-primary { background: var(--primary); color: #fff; }
   .btn-ghost { background: var(--surface); border: 1px solid var(--border); color: var(--text-sec); font-weight: 500; }
   .section-label { font-size: 13px; color: var(--text-muted); font-weight: 600; margin: 18px 2px 8px; text-transform: uppercase; letter-spacing: 0.04em; }
-  .picker { display: flex; flex-wrap: wrap; gap: 7px; margin-bottom: 14px; }
-  .chip { font-size: 13px; padding: 7px 12px; border-radius: var(--radius-pill); border: 1px solid var(--border);
-    background: var(--surface); color: var(--text-sec); cursor: pointer; }
-  .chip.me { border-color: var(--me-border); background: var(--me-bg); color: #c2410c; font-weight: 700; }
-  .chip.added { opacity: 0.4; text-decoration: line-through; }
+  /* Prominent "choose a branch" callout */
+  .picker-card { background: var(--primary-bg); border: 1.5px solid var(--primary); border-radius: var(--radius);
+    padding: 14px 16px; margin-bottom: 14px; }
+  .picker-card .pc-head { display:flex; align-items:center; gap:8px; font-weight:700; font-size:15px; color: var(--primary-dark); margin-bottom:3px; }
+  .picker-card .pc-sub { font-size: 12.5px; color: var(--text-sec); margin-bottom: 11px; }
+  .picker { display: flex; flex-wrap: wrap; gap: 8px; }
+  .chip { font-size: 13px; padding: 9px 14px; border-radius: var(--radius-pill); border: 1.5px solid var(--primary);
+    background: var(--surface); color: var(--primary-dark); cursor: pointer; font-weight: 600;
+    display:inline-flex; align-items:center; gap:7px; box-shadow: var(--shadow); transition: all 0.12s ease; }
+  .chip:hover { background: var(--primary); color:#fff; transform: translateY(-1px); }
+  .chip:hover .chip-meta { color: rgba(255,255,255,0.85); border-color: rgba(255,255,255,0.5); }
+  .chip:active { transform: scale(0.96); }
+  .chip .chip-plus { font-size: 15px; line-height: 1; }
+  .chip .chip-meta { font-size: 11px; font-weight: 600; color: var(--text-muted); background: var(--bg);
+    border: 1px solid var(--border-light); border-radius: var(--radius-pill); padding: 1px 8px; font-variant-numeric: tabular-nums; }
+  .chip.added { opacity: 0.45; text-decoration: line-through; border-color: var(--border); color: var(--text-muted);
+    background: var(--surface); box-shadow:none; pointer-events:none; }
+  .chip.added:hover { transform:none; background: var(--surface); color: var(--text-muted); }
   .branch { background: var(--surface); border: 1px solid var(--border-light); border-radius: var(--radius);
     box-shadow: var(--shadow); margin-bottom: 12px; overflow: hidden; }
   .branch.done { border-color: var(--success); }
@@ -111,7 +127,7 @@
   </div>
 
   <details class="sec timeline">
-    <summary>⏱️ ไทม์ไลน์ <span class="arw">▶</span></summary>
+    <summary>⏱️ ไทม์ไลน์ <span class="hint"></span><span class="arw">▶</span></summary>
     <div class="sec-body"><ul>
       <li><b>6 ต.ค. 12.00 น.</b> — สาขาปิด Shift</li>
       <li><b>6 ต.ค. 01.00–06.00 น.</b> — DXC ตรวจสอบการปิด Shift & Statement Batch Job (พี่เจี๊ยบ/ปูน)</li>
@@ -121,7 +137,7 @@
   </details>
 
   <details class="sec">
-    <summary>🖼️ ตัวอย่าง & วิธีทำ <span class="arw">▶</span></summary>
+    <summary>🖼️ ตัวอย่าง & วิธีทำ <span class="hint"></span><span class="arw">▶</span></summary>
     <div class="sec-body">
       <div class="pack-group">POS — ใส่กล่อง & เขียนรหัส</div>
       <div class="ex-media">
@@ -140,7 +156,7 @@
   </details>
 
   <details class="sec" open>
-    <summary>🧳 ของที่ต้องเอาไป <span class="branch-count" id="packCount" style="margin-left:auto">0/0</span></summary>
+    <summary>🧳 ของที่ต้องเอาไป <span class="hint" style="margin-left:auto"></span><span class="branch-count" id="packCount" style="margin-left:8px">0/0</span><span class="arw" style="margin-left:8px">▶</span></summary>
     <div class="sec-body">
       <div id="packList"></div>
       <div class="contacts">
@@ -150,8 +166,11 @@
     </div>
   </details>
 
-  <div class="section-label">เลือกสาขา (แตะเพื่อเพิ่ม)</div>
-  <div class="picker" id="picker"></div>
+  <div class="picker-card">
+    <div class="pc-head">👉 เลือกสาขาที่ต้องไป</div>
+    <div class="pc-sub">แตะชื่อสาขาด้านล่างเพื่อเพิ่มเข้าเช็คลิสต์ (ตัวเลขคือจำนวน PC/POS ของสาขานั้น)</div>
+    <div class="picker" id="picker"></div>
+  </div>
 
   <div class="add-row">
     <input id="newBranch" type="text" placeholder="หรือพิมพ์ชื่อสาขาเอง" />
@@ -168,7 +187,8 @@
     <button class="btn-ghost" onclick="resetAll()">🔄 รีเซ็ต</button>
   </div>
 
-  <div class="tip">💡 เพิ่มลงหน้าโฮมได้: บน iPhone เปิดใน Safari → ปุ่มแชร์ → <b>Add to Home Screen</b> · ติ๊กแล้วเครื่องจำให้อัตโนมัติ</div>
+  <div class="tip">💾 <b>Export / Import ไว้ทำอะไร?</b> ที่ติ๊กไว้ทั้งหมดจะเก็บอยู่ในเครื่อง/เบราว์เซอร์ที่ใช้เท่านั้น ไม่ได้ sync ขึ้นเซิร์ฟเวอร์ — <b>Export</b> = เซฟสถานะที่ติ๊กออกมาเป็นไฟล์ไว้สำรอง หรือย้ายไปเปิดต่อเครื่องอื่น (เช่น PC → มือถือ), <b>Import</b> = โหลดไฟล์นั้นกลับเข้ามาเพื่อกู้สถานะเดิม (จะเขียนทับที่ติ๊กไว้ในเครื่องนั้น)</div>
+  <div class="tip">💡 <b>เปิดบนมือถือ:</b> บน iPhone เปิดใน Safari → ปุ่มแชร์ → <b>Add to Home Screen</b> เปิดเหมือนแอปเต็มจอ · ติ๊กแล้วเครื่องจำให้อัตโนมัติ</div>
   <footer>ก่อนออกจากสาขา อย่าลืมส่งไฟล์ Checklist ใน Line Group ให้ปูน</footer>
 </div>
 
@@ -242,9 +262,15 @@
     const added=new Set(state.branches.map(b=>b.name));
     ALL_BRANCHES.forEach(br=>{
       const label="#"+br.code+" "+br.name.split("/").pop().trim();
+      const isAdded=added.has(label);
       const chip=document.createElement("button");
-      chip.className="chip"+(added.has(label)?" added":"");
-      chip.textContent=label;
+      chip.className="chip"+(isAdded?" added":"");
+      const metaTxt="PC "+(br.pc??"-")+" · POS "+(br.pos??"-");
+      chip.innerHTML=(isAdded?'<span class="chip-plus">✓</span>':'<span class="chip-plus">+</span>')+
+        '<span class="chip-label"></span><span class="chip-meta"></span>';
+      chip.querySelector(".chip-label").textContent=label;
+      chip.querySelector(".chip-meta").textContent=metaTxt;
+      chip.title=isAdded?"เพิ่มแล้ว":"แตะเพื่อเพิ่มสาขานี้";
       chip.onclick=()=>{ if(added.has(label))return; state.branches.push({name:label, open:false, checks:{}, pc:br.pc, pos:br.pos}); save(); renderPicker(); render(); };
       root.appendChild(chip);
     });
