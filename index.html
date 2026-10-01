@@ -92,6 +92,14 @@
   .chip.added { opacity: 0.45; text-decoration: line-through; border-color: var(--border); color: var(--text-muted);
     background: var(--surface); box-shadow:none; pointer-events:none; }
   .chip.added:hover { transform:none; background: var(--surface); color: var(--text-muted); }
+  .selected-head { display:flex; align-items:center; gap:10px; margin: 20px 2px 10px; padding-bottom:8px; border-bottom: 2px solid var(--primary); }
+  .selected-head .sel-title { font-size: 15px; font-weight: 700; color: var(--primary-dark); }
+  .selected-head .sel-count { font-size: 12px; font-weight: 700; color: #fff; background: var(--primary); border-radius: var(--radius-pill); padding: 1px 10px; min-width: 22px; text-align:center; }
+  .selected-empty { font-size: 13px; color: var(--text-muted); background: var(--bg-tertiary,#f9fafb); border: 1px dashed var(--border); border-radius: var(--radius); padding: 16px; text-align:center; margin: 16px 0; }
+  @media (prefers-reduced-motion: no-preference) {
+    @keyframes cardFlash { 0% { box-shadow: 0 0 0 3px var(--primary); transform: translateY(-4px); } 100% { box-shadow: var(--shadow); transform: none; } }
+    .branch.flash { animation: cardFlash 0.9s ease-out; }
+  }
   .branch { background: var(--surface); border: 1px solid var(--border-light); border-radius: var(--radius);
     box-shadow: var(--shadow); margin-bottom: 12px; overflow: hidden; }
   .branch.done { border-color: var(--success); }
@@ -187,6 +195,11 @@
   </details>
 
 
+  <div class="selected-head" id="selectedHead" style="display:none">
+    <span class="sel-title">📍 สาขาที่เลือกแล้ว</span>
+    <span class="sel-count" id="selCount">0</span>
+  </div>
+  <div class="selected-empty" id="selectedEmpty">ยังไม่ได้เลือกสาขา — กด "👉 เลือกสาขาที่ต้องไป" ด้านบนเพื่อเพิ่มสาขา</div>
   <div id="branches"></div>
 
   <div class="toolbar">
@@ -293,7 +306,7 @@
       chip.querySelector(".chip-label").textContent=label;
       chip.querySelector(".chip-meta").textContent=metaTxt;
       chip.title=isAdded?"เพิ่มแล้ว":"แตะเพื่อเพิ่มสาขานี้";
-      chip.onclick=()=>{ if(added.has(label))return; state.branches.push({name:label, open:false, checks:{}, pc:br.pc, pos:br.pos}); save(); renderPicker(); render(); };
+      chip.onclick=()=>{ if(added.has(label))return; state.branches.push({name:label, open:true, checks:{}, pc:br.pc, pos:br.pos}); window._flashName=label; save(); renderPicker(); render(); };
       root.appendChild(chip);
     });
   }
@@ -313,11 +326,17 @@
   function branchDone(b){ return STEPS.every(s=>b.checks[s.id]); }
   function render(){
     const root=document.getElementById("branches"); root.innerHTML=""; let doneCount=0;
+    const total0=state.branches.length;
+    document.getElementById("selectedHead").style.display = total0? "flex":"none";
+    document.getElementById("selectedEmpty").style.display = total0? "none":"block";
+    document.getElementById("selCount").textContent = total0;
     state.branches.forEach((b,i)=>{
       const done=branchDone(b); if(done)doneCount++;
       const checkedN=STEPS.filter(s=>b.checks[s.id]).length;
       const card=document.createElement("div");
-      card.className="branch"+(b.open?" open":"")+(done?" done":"");
+      const isFlash = window._flashName && b.name===window._flashName;
+      card.className="branch"+(b.open?" open":"")+(done?" done":"")+(isFlash?" flash":"");
+      if(isFlash) card.dataset.flash="1";
       const head=document.createElement("div"); head.className="branch-head";
       head.innerHTML='<span class="chev">▶</span><span class="branch-name"></span><span class="branch-count">'+checkedN+'/'+STEPS.length+'</span><span class="pill '+(done?'done':'')+'">'+(done?'✓ เสร็จ':'กำลังทำ')+'</span><button class="del" title="ลบ">🗑️</button>';
       head.querySelector(".branch-name").textContent=b.name;
@@ -343,6 +362,9 @@
     const total=state.branches.length;
     document.getElementById("ovText").textContent=doneCount+" / "+total+" สาขาเสร็จ";
     document.getElementById("ovBar").style.width=total?(doneCount/total*100)+"%":"0%";
+    if(window._flashName){ const fc=root.querySelector('.branch[data-flash="1"]');
+      if(fc){ try{ fc.scrollIntoView({behavior:"smooth", block:"center"}); }catch(e){} }
+      window._flashName=null; }
   }
 
   document.getElementById("newPackItem").addEventListener("keydown",e=>{ if(e.key==="Enter")addPackItem(); });
